@@ -7,57 +7,70 @@
     <style>
         body {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            font-family: Arial, sans-serif;
-            background-color: #2d2d2d;
         }
         #game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100vw;
             height: 100vh;
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
-    <script src="src/scenes/CityScene.js"></script>
-    <script src="src/scenes/ShopScene.js"></script>
-    <script src="src/scenes/MainScene.js"></script>
+    <script src="https://pixijs.download/v7.0.0/pixi.min.js"></script>
 </head>
 <body>
     <div id="game-container"></div>
     <script>
-        window.addEventListener('load', () => {
-            const tg = window.Telegram.WebApp;
-            tg.ready();
-            tg.expand();
+        // Инициализация Telegram Mini App
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-            const config = {
-                type: Phaser.AUTO,
-                parent: 'game-container',
-                width: window.innerWidth,
-                height: window.innerHeight,
-                backgroundColor: '#87ceeb',
-                scene: CityScene,
-                scale: {
-                    mode: Phaser.Scale.FIT,
-                    autoCenter: Phaser.Scale.CENTER_BOTH
-                },
-                physics: {
-                    default: 'arcade',
-                    arcade: {
-                        gravity: { y: 0 },
-                        debug: false
-                    }
-                }
-            };
+        // Создаем приложение PIXI
+        const app = new PIXI.Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            backgroundColor: 0x1099bb,
+            resolution: window.devicePixelRatio || 1,
+            autoDensity: true,
+        });
 
-            const game = new Phaser.Game(config);
+        // Добавляем canvas в DOM
+        document.getElementById('game-container').appendChild(app.view);
 
-            // Обработка изменения размера окна
-            window.addEventListener('resize', () => {
-                game.scale.resize(window.innerWidth, window.innerHeight);
-            });
+        // Создаем базовую сцену
+        const gameScene = new PIXI.Container();
+        app.stage.addChild(gameScene);
+
+        // Создаем здание магазина
+        const shop = new PIXI.Graphics();
+        shop.beginFill(0xFFD700);
+        shop.drawRect(50, 50, 100, 100);
+        shop.endFill();
+        shop.interactive = true;
+        shop.buttonMode = true;
+        gameScene.addChild(shop);
+
+        // Добавляем текст
+        const style = new PIXI.TextStyle({
+            fontFamily: 'Arial',
+            fontSize: 24,
+            fill: ['#ffffff']
+        });
+        const shopText = new PIXI.Text('Магазин', style);
+        shopText.x = 60;
+        shopText.y = 170;
+        gameScene.addChild(shopText);
+
+        // Обработка кликов
+        shop.on('pointerdown', () => {
+            shop.alpha = 0.5;
+            setTimeout(() => shop.alpha = 1, 100);
+        });
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            app.renderer.resize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
