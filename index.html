@@ -52,16 +52,8 @@
                 }
             };
 
-            let game;
-
-            // Telegram API интеграция
-            tg.MainButton.setText('Начать игру').show();
-            tg.MainButton.onClick(() => {
-                tg.MainButton.hide();
-                if (!game) {
-                    game = new Phaser.Game(config);
-                }
-            });
+            // Создаем игру сразу при загрузке
+            const game = new Phaser.Game(config);
 
             // Полноэкранный режим
             tg.onEvent('fullscreenChanged', (isFullscreen) => {
@@ -72,9 +64,7 @@
 
             // Обработка изменения размера окна
             window.addEventListener('resize', () => {
-                if (game) {
-                    game.scale.resize(window.innerWidth, window.innerHeight);
-                }
+                game.scale.resize(window.innerWidth, window.innerHeight);
             });
         });
     </script>
