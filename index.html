@@ -38,7 +38,7 @@
                 width: window.innerWidth,
                 height: window.innerHeight,
                 backgroundColor: '#87ceeb',
-                scene: CityScene,
+                scene: [CityScene, ShopScene, MainScene],
                 scale: {
                     mode: Phaser.Scale.FIT,
                     autoCenter: Phaser.Scale.CENTER_BOTH
@@ -52,24 +52,28 @@
                 }
             };
 
-            const game = new Phaser.Game(config);
-
-            // Обработка изменения размера окна
-            window.addEventListener('resize', () => {
-                game.scale.resize(window.innerWidth, window.innerHeight);
-            });
+            let game;
 
             // Telegram API интеграция
             tg.MainButton.setText('Начать игру').show();
             tg.MainButton.onClick(() => {
                 tg.MainButton.hide();
-                game.scene.start('CityScene');
+                if (!game) {
+                    game = new Phaser.Game(config);
+                }
             });
 
             // Полноэкранный режим
             tg.onEvent('fullscreenChanged', (isFullscreen) => {
                 if (!isFullscreen) {
                     tg.requestFullscreen();
+                }
+            });
+
+            // Обработка изменения размера окна
+            window.addEventListener('resize', () => {
+                if (game) {
+                    game.scale.resize(window.innerWidth, window.innerHeight);
                 }
             });
         });
