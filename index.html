@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMO RPG</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <script src="src/scenes/CityScene.js" defer></script>
+</head>
+<body>
+    <script>
+        window.addEventListener('load', () => {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+
+            const config = {
+                type: Phaser.AUTO,
+                width: tg.viewportWidth,
+                height: tg.viewportHeight,
+                scene: CityScene
+            };
+
+            const game = new Phaser.Game(config);
+
+            // Пример использования Telegram API
+            tg.MainButton.setText('Начать игру').show();
+            tg.MainButton.onClick(() => {
+                tg.sendData('Game started');
+            });
+
+            // Полноэкранный режим
+            tg.onEvent('fullscreenChanged', (isFullscreen) => {
+                if (!isFullscreen) {
+                    tg.requestFullscreen();
+                }
+            });
+
+            // Добавление на главный экран
+            tg.onEvent('homeScreenAdded', () => {
+                console.log('Игра добавлена на главный экран');
+            });
+        });
+    </script>
+</body>
+</html>
