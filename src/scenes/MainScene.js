@@ -45,3 +45,5 @@ export default class MainScene extends Phaser.Scene {
         alert('Добро пожаловать в лечебницу!');
     }
 }
+
+window.MainScene = MainScene;
