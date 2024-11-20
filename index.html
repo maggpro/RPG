@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MMO RPG</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <style>
         body {
             margin: 0;
@@ -23,35 +20,14 @@
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <script src="src/scenes/CityScene.js"></script>
+    <script src="src/scenes/ShopScene.js"></script>
+    <script src="src/scenes/MainScene.js"></script>
 </head>
 <body>
     <div id="game-container"></div>
     <script>
-        // Функция для динамической загрузки скриптов с версией
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src + '?v=' + Date.now(); // Добавляем временную метку
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-
-        // Загрузка всех сцен
-        async function loadGameScripts() {
-            try {
-                await loadScript('src/scenes/CityScene.js');
-                await loadScript('src/scenes/ShopScene.js');
-                await loadScript('src/scenes/MainScene.js');
-                initGame();
-            } catch (error) {
-                console.error('Error loading scripts:', error);
-            }
-        }
-
-        // Инициализация игры
-        function initGame() {
+        window.addEventListener('load', () => {
             const tg = window.Telegram.WebApp;
             tg.ready();
             tg.expand();
@@ -62,7 +38,7 @@
                 width: window.innerWidth,
                 height: window.innerHeight,
                 backgroundColor: '#87ceeb',
-                scene: [CityScene, ShopScene, MainScene],
+                scene: CityScene,
                 scale: {
                     mode: Phaser.Scale.FIT,
                     autoCenter: Phaser.Scale.CENTER_BOTH
@@ -78,28 +54,11 @@
 
             const game = new Phaser.Game(config);
 
-            // Полноэкранный режим
-            tg.onEvent('fullscreenChanged', (isFullscreen) => {
-                if (!isFullscreen) {
-                    tg.requestFullscreen();
-                }
-            });
-
             // Обработка изменения размера окна
             window.addEventListener('resize', () => {
                 game.scale.resize(window.innerWidth, window.innerHeight);
             });
-
-            // Добавляем обработчик для принудительного обновления
-            if (tg.platform !== 'unknown') {
-                tg.onEvent('viewportChanged', () => {
-                    window.location.reload();
-                });
-            }
-        }
-
-        // Запускаем загрузку скриптов
-        loadGameScripts();
+        });
     </script>
 </body>
 </html>
